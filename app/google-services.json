@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "970894594099",
+    "project_id": "orpheusmusic-81462",
+    "storage_bucket": "orpheusmusic-81462.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970894594099:android:cf028480ed3f73de9f9346",
+        "android_client_info": {
+          "package_name": "com.artemissoftware.orpheusmusic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "970894594099-noqp6gnmmkvbtfieevbeg5e6ms2mrvql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzEqd3lyjzEtF-o6E10UR-lEblMXMWMRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "970894594099-noqp6gnmmkvbtfieevbeg5e6ms2mrvql.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
