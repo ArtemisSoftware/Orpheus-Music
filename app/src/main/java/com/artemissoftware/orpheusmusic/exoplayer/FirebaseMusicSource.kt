@@ -1,15 +1,20 @@
 package com.artemissoftware.orpheusmusic.exoplayer
 
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.*
+import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+import androidx.core.net.toUri
 import com.artemissoftware.orpheusmusic.data.remote.MusicDatabase
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class FirebaseMusicSource @Inject constructor(private val musicDatabase: MusicDatabase, private val dataSourceFactory: DefaultDataSourceFactory){
+class FirebaseMusicSource @Inject constructor(private val musicDatabase: MusicDatabase){
 
     private var songs = emptyList<MediaMetadataCompat>()
 
@@ -44,12 +49,24 @@ class FirebaseMusicSource @Inject constructor(private val musicDatabase: MusicDa
         val concatenatingMediaSource = ConcatenatingMediaSource()
 
         songs.forEach {
-
+            val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(it.getString(METADATA_KEY_MEDIA_URI).toUri())
+            concatenatingMediaSource.addMediaSource(mediaSource)
         }
-
+        return concatenatingMediaSource
     }
 
 
+    fun asMediaItems() = songs.map { song ->
+        val desc = MediaDescriptionCompat.Builder()
+            .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
+            .setTitle(song.description.title)
+            .setSubtitle(song.description.subtitle)
+            .setMediaId(song.description.mediaId)
+            .setIconUri(song.description.iconUri)
+            .build()
+        MediaBrowserCompat.MediaItem(desc, FLAG_PLAYABLE)
+    }
 
     private val onReadyListeners = mutableListOf<(Boolean) -> Unit>()
 
