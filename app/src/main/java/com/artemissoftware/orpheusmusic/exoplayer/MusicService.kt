@@ -100,6 +100,7 @@ class MusicService: MediaBrowserServiceCompat() {
         musicPlayerEventListener = MusicPlayerEventListener(this)
 
         exoPlayer.addListener(musicPlayerEventListener)
+        musicNotificationManager.showNotification(exoPlayer)
     }
 
 
@@ -123,7 +124,6 @@ class MusicService: MediaBrowserServiceCompat() {
         exoPlayer.seekTo(curSongIndex, 0L)
         exoPlayer.playWhenReady = playNow
 
-        musicNotificationManager.showNotification(exoPlayer)
     }
 
 
