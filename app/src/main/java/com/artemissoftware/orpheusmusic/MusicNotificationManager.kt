@@ -57,6 +57,7 @@ class MusicNotificationManager(
         }
 
         override fun getCurrentContentText(player: Player): CharSequence? {
+            newSongCallback()
             return mediaController.metadata.description.subtitle.toString()
         }
 
