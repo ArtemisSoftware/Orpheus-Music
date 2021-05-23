@@ -1,5 +1,9 @@
 # Orpheus-Music
-Spotify clone app that streams music from firebase
+Spotify clone app 
+
+## The Brief
+
+App that streams music from firebase
 
 
 # Architecture & Libraries
