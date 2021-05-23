@@ -2,15 +2,20 @@ package com.artemissoftware.orpheusmusic.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.viewModels
 import androidx.lifecycle.observe
+import androidx.viewpager2.widget.ViewPager2
 import com.artemissoftware.orpheusmusic.R
 import com.artemissoftware.orpheusmusic.adapters.SwipeSongAdapter
 import com.artemissoftware.orpheusmusic.data.entities.Song
+import com.artemissoftware.orpheusmusic.exoplayer.isPlaying
 import com.artemissoftware.orpheusmusic.exoplayer.toSong
 import com.artemissoftware.orpheusmusic.ui.viewmodels.MainViewModel
 import com.artemissoftware.orpheusmusic.util.Status
+import com.artemissoftware.orpheusmusic.util.Status.*
 import com.bumptech.glide.RequestManager
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
@@ -31,11 +36,32 @@ class MainActivity : AppCompatActivity() {
     private var curPlayingSong: Song? = null
 
 
+    private var playbackState: PlaybackStateCompat? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         vpSong.adapter = swipeSongAdapter
+
+
+        vpSong.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                if(playbackState?.isPlaying == true) {
+                    mainViewModel.playOrToggleSong(swipeSongAdapter.songs[position])
+                } else {
+                    curPlayingSong = swipeSongAdapter.songs[position]
+                }
+            }
+        })
+
+        ivPlayPause.setOnClickListener {
+            curPlayingSong?.let {
+                mainViewModel.playOrToggleSong(it, true)
+            }
+        }
 
         subscribeToObservers()
     }
@@ -53,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
             it?.let { result ->
                 when(result.status) {
-                    Status.SUCCESS -> {
+                    SUCCESS -> {
                         result.data?.let { songs ->
                             swipeSongAdapter.songs = songs
                             if(songs.isNotEmpty()) {
@@ -62,17 +88,53 @@ class MainActivity : AppCompatActivity() {
                             switchViewPagerToCurrentSong(curPlayingSong ?: return@observe)
                         }
                     }
-                    Status.ERROR -> Unit
-                    Status.LOADING -> Unit
+                    ERROR -> Unit
+                    LOADING -> Unit
                 }
             }
         }
+
         mainViewModel.curPlayingSong.observe(this) {
             if(it == null) return@observe
 
             curPlayingSong = it.toSong()
             glide.load(curPlayingSong?.imageUrl).into(ivCurSongImage)
             switchViewPagerToCurrentSong(curPlayingSong ?: return@observe)
+        }
+
+        mainViewModel.playbackState.observe(this) {
+            playbackState = it
+            ivPlayPause.setImageResource(
+                if (playbackState?.isPlaying == true) R.drawable.ic_pause else R.drawable.ic_play
+            )
+        }
+
+
+        mainViewModel.isConnected.observe(this) {
+            it?.getContentIfNotHandled()?.let { result ->
+                when (result.status) {
+                    ERROR -> Snackbar.make(
+                        rootLayout,
+                        result.message ?: "An unknown error occured",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    else -> Unit
+                }
+            }
+        }
+
+
+        mainViewModel.networkError.observe(this) {
+            it?.getContentIfNotHandled()?.let { result ->
+                when (result.status) {
+                    ERROR -> Snackbar.make(
+                        rootLayout,
+                        result.message ?: "An unknown error occured",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    else -> Unit
+                }
+            }
         }
     }
 }
