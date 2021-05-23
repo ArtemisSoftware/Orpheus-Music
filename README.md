@@ -6,7 +6,7 @@ Spotify clone app
 App that streams music from firebase
 
 
-# Architecture & Libraries
+## Architecture & Libraries
     - MVVM
     - Coroutines 
     - Dagger Hilt
