@@ -3,9 +3,8 @@ package com.artemissoftware.orpheusmusic.adapters
 import androidx.recyclerview.widget.AsyncListDiffer
 import com.artemissoftware.orpheusmusic.R
 import kotlinx.android.synthetic.main.list_item.view.*
-import javax.inject.Inject
 
-class SwipeSongAdapter : BaseSongAdapter(R.layout.list_item) {
+class SwipeSongAdapter : BaseSongAdapter(R.layout.swipe_item) { //need to be on a module object because it does not have @Inject to tell dagger to automatically create it
 
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {

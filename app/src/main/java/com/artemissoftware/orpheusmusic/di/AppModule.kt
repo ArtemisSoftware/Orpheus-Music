@@ -2,6 +2,7 @@ package com.artemissoftware.orpheusmusic.di
 
 import android.content.Context
 import com.artemissoftware.orpheusmusic.R
+import com.artemissoftware.orpheusmusic.adapters.SwipeSongAdapter
 import com.artemissoftware.orpheusmusic.exoplayer.MusicServiceConnection
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -23,6 +24,10 @@ object AppModule {
         @ApplicationContext context: Context
     ) = MusicServiceConnection(context)
 
+
+    @Singleton
+    @Provides
+    fun provideSwipeSongAdapter() = SwipeSongAdapter()
 
     @Singleton
     @Provides

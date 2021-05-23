@@ -12,7 +12,7 @@ import com.bumptech.glide.RequestManager
 import kotlinx.android.synthetic.main.list_item.view.*
 import javax.inject.Inject
 
-class SongAdapter @Inject constructor(
+class SongAdapter @Inject constructor( //does not need to be on a module object because @Inject tell dagger to automatically do that
     private val glide: RequestManager
 ) : BaseSongAdapter(R.layout.list_item) {
 
