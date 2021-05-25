@@ -12,6 +12,7 @@ App that streams music from firebase
     - Dagger Hilt
     - Navigation components
     - Firebase
+    - Notification manager
     
 ## App preview:
 
